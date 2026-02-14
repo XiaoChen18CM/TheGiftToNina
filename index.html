@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine?</title>
+  <style>
+    :root{
+      --bg1:#ffe7ef;
+      --bg2:#fff7fb;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --yes:#ff4d6d;
+      --no:#7a7a7a;
+      --shadow: 0 18px 40px rgba(0,0,0,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 20%, #ffd1dc 0%, transparent 60%),
+        radial-gradient(900px 500px at 80% 30%, #ffd9f0 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* floating hearts */
+    .heart{
+      position:fixed;
+      bottom:-40px;
+      font-size:18px;
+      opacity:.75;
+      animation: floatUp linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+      user-select:none;
+      pointer-events:none;
+    }
+    @keyframes floatUp{
+      to { transform: translateY(-110vh) rotate(18deg); opacity:0; }
+    }
+
+    .wrap{
+      width:min(920px, 92vw);
+      padding:28px;
+    }
+
+    .card{
+      position:relative;
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(255,255,255,.55);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:34px 26px;
+      overflow:hidden;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 10px 20px rgba(0,0,0,.06);
+      font-size:14px;
+      letter-spacing:.2px;
+      margin-bottom:14px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #ff4d6d);
+    }
+
+    h1{
+      margin:10px 0 8px 0;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height:1.15;
+    }
+    p{
+      margin:0 0 18px 0;
+      font-size: clamp(15px, 2vw, 18px);
+      opacity:.86;
+    }
+
+    .stage{
+      position:relative;
+      min-height: 300px;
+    }
+
+    .btnRow{
+      margin-top:22px;
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    button{
+      border:none;
+      padding:14px 20px;
+      border-radius:16px;
+      font-size:16px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+      box-shadow: 0 14px 28px rgba(0,0,0,.12);
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px) scale(.98); }
+    .yes{
+      background: linear-gradient(180deg, #ff6b88, var(--yes));
+      color:white;
+    }
+    .yes:hover{ transform: translateY(-1px); }
+    .no{
+      background: linear-gradient(180deg, #9a9a9a, var(--no));
+      color:white;
+      position:absolute; /* we'll move it around */
+      left: 56%;
+      top: 62%;
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size:13px;
+      opacity:.65;
+    }
+
+    .page{
+      display:none;
+      animation: pop .25s ease both;
+    }
+    .page.active{ display:block; }
+    @keyframes pop{
+      from{ transform: translateY(8px); opacity:0; }
+      to{ transform: translateY(0); opacity:1; }
+    }
+
+    .imgWrap{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    .pic{
+      width:100%;
+      max-width:520px;
+      border-radius:22px;
+      border:1px solid rgba(0,0,0,.06);
+      box-shadow: 0 16px 34px rgba(0,0,0,.12);
+      overflow:hidden;
+      background:#fff;
+    }
+    .pic img{
+      width:100%;
+      display:block;
+      max-height: 55vh;
+      object-fit: cover;
+    }
+    .miniRow{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:10px;
+    }
+    .ghost{
+      background:#fff;
+      color:#333;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 14px 28px rgba(0,0,0,.08);
+    }
+
+    .footer{
+      margin-top:16px;
+      font-size:12px;
+      opacity:.55;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <!-- PAGE 1 -->
+      <section id="page1" class="page active">
+        <div class="badge"><span class="dot"></span> Valentine Mode: ON</div>
+        <h1>甜甜 Will you be my valentine? 💘</h1>
+        <p>Choose wisely… (No is kinda shy.)</p>
+        <div id="stage" class="stage">
+          <div class="btnRow">
+            <button id="yesBtn" class="yes">Yes ✅</button>
+          </div>
+
+          <!-- No button is absolutely positioned inside stage -->
+          <button id="noBtn" class="no" aria-label="No">No ❌</button>
+        </div>
+
+        <div class="hint">Tip: Try to click “No”… if you can 😼</div>
+      </section>
+
+      <!-- PAGE 2 -->
+      <section id="page2" class="page">
+        <div class="badge"><span class="dot"></span> Accepted!</div>
+        <h1>YAY!! 🎉💗</h1>
+        <p>You just made my day. Happy Valentine’s Day!</p>
+
+        <div class="imgWrap">
+          <div class="pic">
+            <!-- 你可以换成你自己的图片链接，或直接替换成本地图片 -->
+            <img alt="Cute valentine" src="./photo.jpg">
+            ">
+          </div>
+
+          <div class="miniRow">
+            <button id="backBtn" class="ghost">Back ↩</button>
+            <button id="moreHeartsBtn" class="yes">More Hearts 💞</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const stage = document.getElementById('stage');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const backBtn = document.getElementById('backBtn');
+    const moreHeartsBtn = document.getElementById('moreHeartsBtn');
+
+    // ---- Page switching ----
+    function goTo(page){
+      page1.classList.remove('active');
+      page2.classList.remove('active');
+      page.classList.add('active');
+    }
+
+    yesBtn.addEventListener('click', () => {
+      burstHearts(18);
+      goTo(page2);
+    });
+
+    backBtn?.addEventListener('click', () => {
+      goTo(page1);
+      // reset no position a bit
+      placeNo(0.56, 0.62);
+      burstHearts(8);
+    });
+
+    moreHeartsBtn?.addEventListener('click', () => burstHearts(24));
+
+    // ---- No button "runs away" ----
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+    function placeNo(rx, ry){
+      // rx, ry are relative within stage (0..1)
+      const rect = stage.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const x = clamp(rx * rect.width, 10, rect.width - btnRect.width - 10);
+      const y = clamp(ry * rect.height, 10, rect.height - btnRect.height - 10);
+
+      noBtn.style.left = x + 'px';
+      noBtn.style.top  = y + 'px';
+    }
+
+    function moveNoAway(){
+      const rect = stage.getBoundingClientRect();
+
+      // random position, biased away from the yes button area a bit
+      const rx = Math.random() * 0.85 + 0.05; // 0.05..0.90
+      const ry = Math.random() * 0.70 + 0.20; // 0.20..0.90
+
+      placeNo(rx, ry);
+
+      // tiny wiggle animation
+      noBtn.animate(
+        [
+          { transform: 'translate(0,0) rotate(0deg)' },
+          { transform: 'translate(-6px,-4px) rotate(-3deg)' },
+          { transform: 'translate(0,0) rotate(0deg)' }
+        ],
+        { duration: 180, easing: 'ease-out' }
+      );
+    }
+
+    // Make it hard to click:
+    // 1) when cursor approaches
+    // 2) on touchstart
+    // 3) even on click, it still escapes
+    noBtn.addEventListener('mouseenter', moveNoAway);
+    noBtn.addEventListener('mousemove', (e) => {
+      // if cursor is close-ish, run
+      const b = noBtn.getBoundingClientRect();
+      const dx = Math.abs(e.clientX - (b.left + b.width/2));
+      const dy = Math.abs(e.clientY - (b.top + b.height/2));
+      if (dx < 60 && dy < 40) moveNoAway();
+    });
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoAway();
+    }, { passive:false });
+
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNoAway();
+      burstHearts(6);
+    });
+
+    // Place once after load
+    window.addEventListener('load', () => {
+      placeNo(0.56, 0.62);
+      setInterval(() => burstHearts(1), 900);
+    });
+    window.addEventListener('resize', () => placeNo(Math.random()*0.6+0.2, Math.random()*0.3+0.55));
+
+    // ---- Hearts generator ----
+    const HEARTS = ['💗','💖','💘','💝','💞','💓','💕'];
+    function spawnHeart(){
+      const el = document.createElement('div');
+      el.className = 'heart';
+      el.textContent = HEARTS[Math.floor(Math.random()*HEARTS.length)];
+      const size = Math.random()*18 + 14;
+      el.style.fontSize = size + 'px';
+      el.style.left = (Math.random()*100) + 'vw';
+      el.style.animationDuration = (Math.random()*2.6 + 2.2) + 's';
+      el.style.opacity = (Math.random()*0.35 + 0.45).toFixed(2);
+      document.body.appendChild(el);
+      el.addEventListener('animationend', () => el.remove());
+    }
+    function burstHearts(n=12){
+      for(let i=0;i<n;i++){
+        setTimeout(spawnHeart, i*35);
+      }
+    }
+  </script>
+</body>
+</html>
